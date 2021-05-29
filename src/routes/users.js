@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var actions = require('../database/actions/actions');
 var authentication = require('../authentication');
+var usuariosModel = require('../models/usuariosModel');
 
 /**
  * @swagger
@@ -24,7 +25,7 @@ var authentication = require('../authentication');
  *         description: todos los usuarios del sistema
  */
 router.get('/users', authentication.verifyUser, async (req, res) => {
-    const users = await actions.get('SELECT * FROM users');
+    const users = await actions.get(usuariosModel.model);
     res.send(users);
 });
 
@@ -55,7 +56,7 @@ router.get('/users', authentication.verifyUser, async (req, res) => {
  *         description: usuario del sistema al que pertence el id
  */
 router.get('/user/:id', authentication.verifyUser, async (req, res) => {
-    const user = await actions.get('SELECT * FROM users WHERE id = :id', { id: req.params.id });
+    const user = await actions.get(usuariosModel.model, { _id: req.params.id });
     res.send(user);
 });
 
@@ -86,7 +87,7 @@ router.get('/user/:id', authentication.verifyUser, async (req, res) => {
  *         description: usuario del sistema al que pertence el nombre
  */
 router.get('/userByUsername/:userName', authentication.verifyUser, async (req, res) => {
-    const user = await actions.get('SELECT * FROM user WHERE UserName = :userName', { id: req.params.userName });
+    const user = await actions.get(usuariosModel.model, { nombre: req.params.userName });
     res.send(user);
 });
 
@@ -119,8 +120,7 @@ router.get('/userByUsername/:userName', authentication.verifyUser, async (req, r
  */
 router.post('/userAdmin', authentication.verifyUser, async (req, res) => {
     const user = await actions.create(
-        `INSERT INTO user (UserName, Name, Password, Email, Phone, Addres, Type) 
-        VALUES (:userName, :name, :password, :email, :phone, :address, 1)`, 
+        usuariosModel.model, 
         req.body);
         res.send(user);
 });
@@ -157,6 +157,20 @@ router.post('/userClient', authentication.verifyUser, async (req, res) => {
         `INSERT INTO user (UserName, Name, Password, Email, Phone, Addres, Type) 
         VALUES (:userName, :name, :password, :email, :phone, :address, 2)`, 
         req.body);
+    res.send(user);
+});
+
+router.put('/user/:id', authentication.verifyUser, async (req, res) => {
+    const user = await actions.update(
+        usuariosModel.model, 
+        req.params.id, req.body);
+    res.send(user);
+});
+
+router.delete('/user/:id',  authentication.verifyUser, async (req, res) => {
+    const user = await actions.delete(
+        usuariosModel.model, 
+        req.params.id, req.body);
     res.send(user);
 });
 

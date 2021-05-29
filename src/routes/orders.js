@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var actions = require('../database/actions/actions');
+var actions = require('../database/actions/actions_mysql');
 var authentication = require('../authentication');
 
 /**

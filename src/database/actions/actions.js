@@ -1,22 +1,21 @@
-const sequalize = require('sequelize');
-const database = new sequalize('mysql://root:password@localhost:3306/delilahresto');
+const mongoose = require('mongoose');
+const { model } = require('../../models/usuariosModel');
+mongoose.connect('mongodb://localhost:27017/warehouse');
 
-module.exports.get = async (sentence, parameters) => {
-    return await database.query(sentence, 
-    { replacements: parameters, type: database.QueryTypes.SELECT });
+module.exports.get = async (model, parameters) => {
+    return model.find(parameters);
 }
 
-module.exports.create = async (sentence, parameters) => {
-    return await database.query(sentence, 
-        { replacements: parameters, type: database.QueryTypes.INSERT });
+module.exports.create = async (model, data) => {
+    const newObject = new model(data)
+	const result = await newObject.save();
+    return result;
 }
 
-module.exports.update = async (sentence, parameters) => {
-    return await database.query(sentence, 
-        { replacements: parameters, type: database.QueryTypes.UPDATE });
+module.exports.update = async (model, id, data) => {
+  return await model.findByIdAndUpdate(id, data)
 }
 
-module.exports.delete = async (sentence, parameters) => {
-    return await database.query(sentence, 
-        { replacements: parameters, type: database.QueryTypes.DELETE });
+module.exports.delete = async (model, id, data) => {
+    return await model.findByIdAndDelete(id, data)
 }
