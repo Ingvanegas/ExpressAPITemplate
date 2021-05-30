@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var ObjectId = mongoose.Types.ObjectId;
 
 const schema = {
     nombre: String,
-    idRegion: String,
+    idRegion: ObjectId,
 }
 
 module.exports.model = mongoose.model('Paises', schema);

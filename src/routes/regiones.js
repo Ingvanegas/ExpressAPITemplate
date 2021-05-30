@@ -5,15 +5,15 @@ var authentication = require('../authentication');
 var regionesModel = require('../models/regionesModel');
 
 router.get('/regiones', authentication.verifyUser, async (req, res) => {
-    const users = await actions.get(regionesModel.model);
-    res.send(users);
+    const regiones = await actions.get(regionesModel.model);
+    res.send(regiones);
 });
 
 router.post('/region', authentication.verifyUser, async (req, res) => {
-    const user = await actions.create(
+    const region = await actions.create(
         regionesModel.model, 
         req.body);
-        res.send(user);
+        res.send(region);
 });
 
 router.put('/something', authentication.verifyUser, async (req, res) => {

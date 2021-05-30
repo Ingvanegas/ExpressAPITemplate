@@ -3,10 +3,18 @@ var router = express.Router();
 var actions = require('../database/actions/actions');
 var authentication = require('../authentication');
 var paisesModel = require('../models/paisesModel');
-var regionesModel = require('../models/regionesModel');
 
 router.get('/paises', authentication.verifyUser, async (req, res) => {
-    const paises = await actions.get(paisesModel.model);
+    const paises = await paisesModel.model.aggregate([
+        {
+            "$lookup": {
+                "from": "regiones",
+                "localField": "idRegion",
+                "foreignField": "_id",
+                "as": "region"
+            }
+        }
+    ]).exec()
     res.send(paises);
 });
 
