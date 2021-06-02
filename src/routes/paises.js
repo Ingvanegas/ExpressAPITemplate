@@ -4,6 +4,12 @@ var actions = require('../database/actions/actions');
 var authentication = require('../authentication');
 var paisesModel = require('../models/paisesModel');
 
+router.get('/paises/:idRegion', authentication.verifyUser, async (req, res) => {
+    const paises = await actions.get(paisesModel.model, {idRegion: req.params.idRegion });
+    res.send(paises);
+});
+
+
 router.get('/paises', authentication.verifyUser, async (req, res) => {
     const paises = await paisesModel.model.aggregate([
         {

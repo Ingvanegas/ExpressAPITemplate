@@ -5,6 +5,7 @@ var rateLimit = require('express-rate-limit');
 var authentication = require('./authentication');
 var swaggerJsDoc = require('swagger-jsdoc');
 var swaggerUi = require('swagger-ui-express');
+var cors = require('cors');
 
 var actions = require('./database/actions/actions');
 
@@ -35,6 +36,9 @@ const swaggerSpec = swaggerJsDoc(options);
 
 var server = express();
 
+server.use(cors({
+    origin: '*'
+  }));
 server.use(helmet());
 server.use(bodyParser());
 server.use('/', apiLimiterLogin);

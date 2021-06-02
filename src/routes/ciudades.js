@@ -3,9 +3,38 @@ var router = express.Router();
 var actions = require('../database/actions/actions');
 var authentication = require('../authentication');
 var ciudadesModel = require('../models/ciudadesModel');
+const mongoose = require('mongoose');
+
+var ObjectId = mongoose.Types.ObjectId;
+
+router.get('/ciudades/:idPais', authentication.verifyUser, async (req, res) => {
+    const ciudades = await ciudadesModel.model.aggregate([
+        {
+            "$match" : { idPais : ObjectId(req.params.idPais) },
+        },
+        {            
+            "$lookup": {
+                "from": "paises",
+                "localField": "idPais",
+                "foreignField": "_id",
+                "as": "pais"
+            }
+        }
+    ]).exec()
+    res.send(ciudades);
+});
 
 router.get('/ciudades', authentication.verifyUser, async (req, res) => {
-    const ciudades = await actions.get(ciudadesModel.model);
+    const ciudades = await ciudadesModel.model.aggregate([
+        {
+            "$lookup": {
+                "from": "paises",
+                "localField": "idPais",
+                "foreignField": "_id",
+                "as": "pais"
+            }
+        }
+    ]).exec()
     res.send(ciudades);
 });
 
